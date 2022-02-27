@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 pacman -Syu --noconfirm --needed base-devel
 
 useradd calbuilder -m
