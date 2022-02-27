@@ -9,10 +9,11 @@ oldFiles=$(find -H "$PWD")
 
 sudo -H -u nobody makepkg --syncdeps --noconfirm
 
-sudo -H -u nobody makepkg --printsrcinfo > .SRCINFO
+sudo -u nobody makepkg --printsrcinfo > .SRCINFO
 echo "::set-output name=srcInfo::.SRCINFO"
 sudo mv .SRCINFO /github/workspace
 
+pkgFile=$(sudo -u nobody makepkg --packagelist)
 relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
 echo "::set-output name=pkgFile::$relPkgFile"
 sudo mv "$pkgFile" /github/workspace
