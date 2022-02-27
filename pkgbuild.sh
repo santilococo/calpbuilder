@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 pacman -Syu --noconfirm --needed base-devel
+chmod -R a+rw .
 
 baseDir="$PWD"
 cd "${INPUT_PKGDIR:-.}"
