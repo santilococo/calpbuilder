@@ -13,7 +13,7 @@ baseDir="$PWD"
 cd "${INPUT_PKGDIR:-.}"
 oldFiles=$(find -H "$PWD")
 
-sudo -H -u calbuilder makepkg --syncdeps --noconfirm
+sudo -H -u calbuilder makepkg -s --noconfirm
 
 sudo -u calbuilder makepkg --printsrcinfo > .SRCINFO
 echo "::set-output name=srcInfo::.SRCINFO"
@@ -24,6 +24,6 @@ relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
 echo "::set-output name=pkgFile::$relPkgFile"
 sudo mv "$pkgFile" /github/workspace
 
-newFiles=$(find -H $PWD)
+newFiles=$(find -H "$PWD")
 toRemove=$(printf '%s\n%s\n' "$newFiles" "$oldFiles" | sort | uniq -u)
-rm -rf $toRemove
+rm -rf "$toRemove"
