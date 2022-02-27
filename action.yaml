@@ -1,0 +1,19 @@
+name: Calbuilder
+author: Santiago Lo Coco
+description: Makepkg build, namcap check and generate .SRCINFO
+branding:
+  color: green
+  icon: zap
+inputs:
+  pkgDir:
+    description: "PKGBUILD directory relative path."
+    required: false
+    default: "."
+outputs:
+  srcInfo:
+    description: "Generated .SRCINFO"
+  pkgFile:
+    description: "Built package file."
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
