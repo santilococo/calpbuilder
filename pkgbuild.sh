@@ -1,17 +1,14 @@
 #!/usr/bin/env bash
 
 pacman -Syu --noconfirm --needed base-devel
-useradd builder -m
-echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-chmod -R a+rw .
 
 baseDir="$PWD"
 cd "${INPUT_PKGDIR:-.}"
 oldFiles=$(find -H "$PWD")
 
-sudo -H -u builder makepkg --syncdeps --noconfirm ${INPUT_MAKEPKGARGS:-}
+sudo -H -u nobody makepkg --syncdeps --noconfirm
 
-sudo -H -u builder makepkg --printsrcinfo > .SRCINFO
+sudo -H -u nobody makepkg --printsrcinfo > .SRCINFO
 echo "::set-output name=srcInfo::.SRCINFO"
 sudo mv .SRCINFO /github/workspace
 
