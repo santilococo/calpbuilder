@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 
+setPermissions() {
+    echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    visudo -c
+    chmod -R a+rw .
+}
+
 runScript() {
     set -euo pipefail
 
     pacman -Syu --noconfirm base-devel
 
-    echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-    visudo -c
-    chmod -R a+rw .
+    setPermissions
 
     baseDir="$PWD"
     [ -n "$INPUT_PKGDIR" ] && inBaseDir=true || inBaseDir=false
