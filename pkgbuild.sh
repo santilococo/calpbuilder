@@ -6,6 +6,25 @@ setPermissions() {
     chmod -R a+rw .
 }
 
+exportPackageFiles() {
+    sudo -u nobody makepkg --printsrcinfo > .SRCINFO
+    exportFile "srcInfo" ".SRCINFO"
+
+    pkgFile=$(sudo -u nobody makepkg --packagelist)
+    if [ -f "$pkgFile" ]; then
+        relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
+        exportFile "pkgFile" "$relPkgFile" "$pkgFile"
+    fi
+}
+
+exportFile() {
+    echo "::set-output name=$1::$2"
+    if [ "$inBaseDir" = false ]; then
+        [ $# -eq 2 ] && pkgFile=$2 || pkgFile=$3
+        mv "$pkgFile" /github/workspace
+    fi
+}
+
 runScript() {
     set -euo pipefail
 
@@ -20,14 +39,7 @@ runScript() {
 
     sudo -u nobody makepkg -s --noconfirm
 
-    sudo -u nobody makepkg --printsrcinfo > .SRCINFO
-    echo "::set-output name=srcInfo::.SRCINFO"
-    [ $inBaseDir = false ] && mv .SRCINFO /github/workspace
-
-    pkgFile=$(sudo -u nobody makepkg --packagelist)
-    relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
-    echo "::set-output name=pkgFile::$relPkgFile"
-    [ $inBaseDir = false ] && mv "$pkgFile" /github/workspace
+    exportPackageFiles
 
     newFiles=$(find -H "$PWD" -not -path '*.git*')
     mapfile -t toRemove < <(printf '%s\n%s\n' "$newFiles" "$oldFiles" | sort | uniq -u)
