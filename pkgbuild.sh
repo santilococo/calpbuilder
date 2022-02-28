@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-pacman -Syu --noconfirm --needed base-devel
+pacman -Syu --noconfirm base-devel
 
 echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 visudo -c
