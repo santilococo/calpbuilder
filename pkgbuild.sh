@@ -115,15 +115,18 @@ runScript() {
     else
         inBaseDir=true
     fi
-    oldFiles=$(find -H "$PWD" -not -path '*.git*')
+    findArgs=("-not" "-path" "*.git*")
+    oldFiles=$(find -H "$PWD" "${findArgs[@]}")
 
     installAurDeps
     buildPackage
     exportPackageFiles
     namcapAnalysis
 
-    newFiles=$(find -H "$PWD" -not -path '*.git*' -not -name "$relPkgFile*" -not -name '.SRCINFO')
-    mapfile -t toRemove < <(printf '%s\n%s\n' "$newFiles" "$oldFiles" | sort | uniq -u)
+    findArgs+=("-not" "-name" "$relPkgFile*" "-not" "-name" ".SRCINFO")
+    newFiles=$(find -H "$PWD" "${findArgs[@]}")
+    files=$(printf '%s\n%s\n' "$newFiles" "$oldFiles")
+    mapfile -t toRemove < <(echo "$files" | sort | uniq -u)
     rm -rf "${toRemove[@]}"
 }
 
