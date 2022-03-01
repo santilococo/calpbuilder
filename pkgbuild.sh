@@ -123,7 +123,7 @@ runScript() {
     exportPackageFiles
     namcapAnalysis
 
-    newFiles=$(find -H "$PWD" -not -path '*.git*')
+    newFiles=$(find -H "$PWD" -not -path '*.git*' -not -name "$pkgFile*" -not -name '.SRCINFO')
     mapfile -t toRemove < <(printf '%s\n%s\n' "$newFiles" "$oldFiles" | sort | uniq -u)
     rm -rf "${toRemove[@]}"
 }
