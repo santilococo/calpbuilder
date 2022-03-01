@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+getInputs() {
+    gpgPrivateKey="$INPUT_GPGPRIVATEKEY"
+    gpgPublicKey="$INPUT_GPGPUBLICKEY"
+    gpgPassphrase="$INPUT_GPGPASSPHRASE"
+    pkgDir="$INPUT_PKGDIR"
+}
+
 addUser() {
     useradd calbuilder -m
     echo "calbuilder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -70,6 +77,13 @@ namcapAnalysis() {
     fi
 }
 
+exportFile() {
+    echo "::set-output name=$1::$2"
+    if [ "$inBaseDir" = false ]; then
+        mv "$pkgFile" /github/workspace
+    fi
+}
+
 exportPackageFiles() {
     sudo -u calbuilder makepkg --printsrcinfo > .SRCINFO
     exportFile "srcInfo" ".SRCINFO"
@@ -82,20 +96,6 @@ exportPackageFiles() {
             exportFile "pkgFileSig" "$pkgFile.sig"
         fi
     fi
-}
-
-exportFile() {
-    echo "::set-output name=$1::$2"
-    if [ "$inBaseDir" = false ]; then
-        mv "$pkgFile" /github/workspace
-    fi
-}
-
-getInputs() {
-    gpgPrivateKey="$INPUT_GPGPRIVATEKEY"
-    gpgPublicKey="$INPUT_GPGPUBLICKEY"
-    gpgPassphrase="$INPUT_GPGPASSPHRASE"
-    pkgDir="$INPUT_PKGDIR"
 }
 
 runScript() {
