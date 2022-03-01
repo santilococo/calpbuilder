@@ -4,12 +4,12 @@ GitHub action to build a package, analyze it with `namcap`, and output the packa
 This action supports PKGBUILDs that have AUR dependencies.
 
 ## Table of contents
-  - [Inputs and outputs <a name="io"></a>](#io-)
+  - [Inputs and outputs <a name="inputs-and-outputs-"></a>](#inputs-and-outputs--)
   - [Usage <a name="usage"></a>](#usage-)
   - [Contributing <a name="contributing"></a>](#contributing-)
   - [License <a name="license"></a>](#license-)
 
-## Inputs and outputs <a name="io"></a>
+## Inputs and outputs <a name="inputs-and-outputs-"></a>
 ### Inputs:
 * `pkgDir`: PKGBUILD directory relative path.
 * `gpgPublicKey`: GPG public key that will be used to sign packages.
