@@ -26,7 +26,7 @@ installAurDeps() {
         sudo -u calbuilder git clone https://aur.archlinux.org/paru-bin.git
         cd paru-bin; sudo -Hu calbuilder makepkg -si --noconfirm; cd ..
         for aurPkg in "${aurPkgs[@]}"; do
-            paru -S --noconfirm "$aurPkg"
+            sudo -Hu calbuilder paru -S --noconfirm "$aurPkg"
         done
         rm -rf paru-bin 
     fi
