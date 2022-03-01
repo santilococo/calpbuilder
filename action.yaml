@@ -1,6 +1,6 @@
 name: Calbuilder
 author: Santiago Lo Coco
-description: Makepkg build, namcap check and generate .SRCINFO
+description: Makepkg, analyze it with namcap, and output the package file and its .SRCINFO
 branding:
   color: green
   icon: zap
@@ -9,6 +9,19 @@ inputs:
     description: "PKGBUILD directory relative path."
     required: false
     default: "."
+  gpgPublicKey:
+    description: "GPG public key that will be used to sign packages."
+    required: false
+    default: ""
+  gpgPrivateKey:
+    description: "GPG private key."
+    required: false
+    default: ""
+  gpgPassphrase:
+    description: "The GPG passphrase for the gpgPrivateKey."
+    required: false
+    default: ""
+
 outputs:
   srcInfo:
     description: "Generated .SRCINFO"
