@@ -119,11 +119,9 @@ runScript() {
 
     installAurDeps
     buildPackage
-    ls -al
     exportPackageFiles
     namcapAnalysis
 
-    echo "$relPkgFile --- $pkgFile"
     newFiles=$(find -H "$PWD" -not -path '*.git*' -not -name "$relPkgFile*" -not -name '.SRCINFO')
     mapfile -t toRemove < <(printf '%s\n%s\n' "$newFiles" "$oldFiles" | sort | uniq -u)
     rm -rf "${toRemove[@]}"
