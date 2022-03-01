@@ -4,6 +4,9 @@ GitHub action to build a package, analyze it with namcap, and output the package
 ## Inputs and outputs
 Inputs:
 * `pkgDir`: PKGBUILD directory relative path.
+* `gpgPublicKey`: GPG public key that will be used to sign packages.
+* `gpgPrivateKey`: GPG private key.
+* `gpgPassphrase`: The GPG passphrase for the gpgPrivateKey.
 
 Outputs:
 * `srcInfo`: Generated `.SRCINFO`.
