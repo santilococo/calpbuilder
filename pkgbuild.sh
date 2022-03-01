@@ -33,6 +33,9 @@ exportPackageFiles() {
     if [ -f "$pkgFile" ]; then
         relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
         exportFile "pkgFile" "$relPkgFile" "$pkgFile"
+        if [ -n "$gpgPrivateKey" ]; then
+            exportFile "pkgFileSig" "$relPkgFile.sig" "$pkgFile.sig"
+        fi
     fi
 }
 
@@ -88,7 +91,6 @@ runScript() {
     oldFiles=$(find -H "$PWD" -not -path '*.git*')
 
     buildPackage
-
     exportPackageFiles
     namcapAnalysis
 
