@@ -14,7 +14,13 @@ installAurDeps() {
         sudo -u nobody makepkg --printsrcinfo > .SRCINFO
         regExp="^[[:space:]]*\(make\)\?depends\(.\)* = \([[:alnum:][:punct:]]*\)[[:space:]]*$"
         mapfile -t pkgDeps < <(sed -n -e "s/$regExp/\3/p" .SRCINFO)
-        paru -S --noconfirm "${pkgDeps[@]}"
+        for pkgDep in "${pkgDeps[@]}"; do
+            pkgName=$(echo "$pkgDep" | sed 's/[><=].*//')
+            paruOutput=$(paru -Ss "${pkgDep}" | grep "\/${pkgDep} ")
+            if echo $paruOutput | grep -q "^aur\/"
+                paru -S --noconfirm "$pkgDep"
+            fi
+        done
         rm -rf paru-bin .SRCINFO
     fi
 }
