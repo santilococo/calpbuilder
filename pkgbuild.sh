@@ -6,8 +6,20 @@ setPermissions() {
     chmod -R a+rw .
 }
 
+importPrivateKey() {
+    echo "$INPUT_GPGPRIVATEKEY" > private.key
+    sudo -u nobody gpg --batch --pinentry-mode loopback --passphrase "$INPUT_GPGPASSPHRASE" --import private.key
+    rm private.key
+    sed -i -e "s/gpg/gpg --batch --pinentry-mode loopback --passphrase \"$INPUT_GPGPASSPHRASE\"/" /usr/share/makepkg/integrity/generate_signature.sh
+}
+
 buildPackage() {
-    sudo -u nobody makepkg -s --noconfirm
+    if [ -n "$INPUT_GPGPRIVATEKEY" ] && [ -n "$INPUT_GPGPUBLICKEY" ]; then
+        importPrivateKey
+        sudo -u nobody makepkg -s --sign --key "$INPUT_GPGPUBLICKEY" --noconfirm
+    else
+        sudo -u nobody makepkg -s --noconfirm
+    fi
 }
 
 exportPackageFiles() {
