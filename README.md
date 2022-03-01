@@ -9,7 +9,7 @@ This action supports PKGBUILDs that have AUR dependencies.
   - [Contributing <a name="contributing"></a>](#contributing-)
   - [License <a name="license"></a>](#license-)
 
-## Inputs and outputs
+## Inputs and outputs <a name="io"></a>
 ### Inputs:
 * `pkgDir`: PKGBUILD directory relative path.
 * `gpgPublicKey`: GPG public key that will be used to sign packages.
