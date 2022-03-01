@@ -78,10 +78,8 @@ namcapAnalysis() {
 }
 
 exportFile() {
+    [ "$inBaseDir" = false ] && mv "$2" /github/workspace
     echo "::set-output name=$1::$2"
-    if [ "$inBaseDir" = false ]; then
-        mv "$pkgFile" /github/workspace
-    fi
 }
 
 exportPackageFiles() {
