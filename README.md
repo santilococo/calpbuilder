@@ -1,6 +1,8 @@
 # calbuilder
 GitHub action to build a package, analyze it with namcap, and output the package file and its .SRCINFO.
 
+This action supports PKGBUILDs that have AUR dependencies.
+
 ## Inputs and outputs
 Inputs:
 * `pkgDir`: PKGBUILD directory relative path.
