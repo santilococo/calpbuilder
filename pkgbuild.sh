@@ -118,6 +118,7 @@ runScript() {
 
     installAurDeps
     buildPackage
+    ls -al
     exportPackageFiles
     namcapAnalysis
 
