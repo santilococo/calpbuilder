@@ -23,7 +23,7 @@ installAurDeps() {
     done
     if [ "${#aurPkgs[@]}" -gt 0 ]; then
         pacman -S --noconfirm --needed git
-        git clone https://aur.archlinux.org/paru-bin.git
+        sudo -u calbuilder git clone https://aur.archlinux.org/paru-bin.git
         cd paru-bin; sudo -Hu calbuilder makepkg -si --noconfirm; cd ..
         for aurPkg in "${aurPkgs[@]}"; do
             paru -S --noconfirm "$aurPkg"
