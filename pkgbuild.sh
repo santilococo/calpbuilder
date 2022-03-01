@@ -33,10 +33,6 @@ namcapAnalysis() {
     if [ -f "$pkgFile" ]; then
         relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
         mapfile -t warnings < <(namcap "$pkgFile")
-        # [ ${#warnings[@]} -eq 0 ] && return
-        # for warning in "${warnings[@]}"; do
-        #     echo "::warning::$relPkgFile:$warning"
-        # done
         printWarnings "$relPkgFile"
     fi
 }
