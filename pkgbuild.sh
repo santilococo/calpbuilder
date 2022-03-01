@@ -14,9 +14,9 @@ installAurDeps() {
     for pkgDep in "${pkgDeps[@]}"; do
         pkgName=$(echo "$pkgDep" | sed 's/[><=].*//')
         set +e
-        pkgInfo=$(paru -Ss "${pkgName}" 2> /dev/null)
+        pkgInfo=$(pacman -Ss "${pkgName}" 2> /dev/null)
         set -e
-        if ! echo "$pkgInfo" | grep "\/${pkgName} "; then
+        if ! echo $pkgInfo | grep -q "\/${pkgName} "; then
             aurPkgs+=("$pkgName")
         fi
     done
