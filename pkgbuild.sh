@@ -25,6 +25,18 @@ exportFile() {
     fi
 }
 
+namcapAnalysis() {
+    pacman -S --noconfirm namcap
+
+    namcapOutput=$(namcap PKGBUILD)
+    echo "::warning::$namcapOutput"
+    if [ -f "$pkgFile" ]; then
+        relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
+        namcapOutput=$(namcap "$pkgFile")
+        echo "::warning::$relPkgFile:$namcapOutput"
+    fi
+}
+
 runScript() {
     set -euo pipefail
 
@@ -40,6 +52,7 @@ runScript() {
     sudo -u nobody makepkg -s --noconfirm
 
     exportPackageFiles
+    namcapAnalysis
 
     newFiles=$(find -H "$PWD" -not -path '*.git*')
     mapfile -t toRemove < <(printf '%s\n%s\n' "$newFiles" "$oldFiles" | sort | uniq -u)
