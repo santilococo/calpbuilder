@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 setPermissions() {
+    useradd calbuilder -m
     echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
     visudo -c
     chmod -R a+rw .
@@ -34,7 +35,7 @@ installAurDeps() {
 importPrivateKey() {
     echo "$gpgPrivateKey" > private.key
     gpgFlags=("--batch" "--pinentry-mode" "loopback" "--passphrase")
-    sudo -Hu nobody gpg "${gpgFlags[@]}" "$gpgPassphrase" --import private.key
+    sudo -H -u nobody gpg "${gpgFlags[@]}" "$gpgPassphrase" --import private.key
     rm private.key
     sedCommand="gpg ${gpgFlags[*]} \"$gpgPassphrase\""
     makepkgSigFile="/usr/share/makepkg/integrity/generate_signature.sh"
@@ -44,7 +45,7 @@ importPrivateKey() {
 buildPackage() {
     if [ -n "$gpgPrivateKey" ] && [ -n "$gpgPublicKey" ]; then
         importPrivateKey
-        sudo -Hu nobody makepkg -s --sign --key "$gpgPublicKey" --noconfirm
+        sudo -H -u nobody makepkg -s --sign --key "$gpgPublicKey" --noconfirm
     else
         sudo -u nobody makepkg -s --noconfirm
     fi
