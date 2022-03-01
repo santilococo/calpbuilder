@@ -17,9 +17,9 @@ installAurDeps() {
         for pkgDep in "${pkgDeps[@]}"; do
             pkgName=$(echo "$pkgDep" | sed 's/[><=].*//')
             set +e
-            paruOutput=$(paru -Ss "${pkgName}" 2> /dev/null | grep "\/${pkgName} ")
+            pkgInfo=$(paru -Ss "${pkgName}" 2> /dev/null | grep "\/${pkgName} ")
             set -e
-            if echo "$paruOutput" | grep -q "^aur\/"; then
+            if echo "$pkgInfo" | grep -q "^aur\/"; then
                 paru -S --noconfirm "$pkgName"
             fi
         done
