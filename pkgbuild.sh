@@ -29,11 +29,11 @@ namcapAnalysis() {
     pacman -S --noconfirm namcap
 
     namcapOutput=$(namcap PKGBUILD)
-    echo "::warning::$namcapOutput"
+    [ -n "$namcapOutput" ] && echo "::warning::$namcapOutput"
     if [ -f "$pkgFile" ]; then
         relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
         namcapOutput=$(namcap "$pkgFile")
-        echo "::warning::$relPkgFile:$namcapOutput"
+        [ -n "$namcapOutput" ] && echo "::warning::$relPkgFile:$namcapOutput"
     fi
 }
 
