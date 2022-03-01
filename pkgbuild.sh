@@ -120,7 +120,7 @@ runScript() {
     namcapAnalysis
     exportPackageFiles
 
-    findArgs+=("-not" "-name" "$relPkgFile*" "-not" "-name" ".SRCINFO")
+    findArgs+=("-not" "-name" "$pkgFile*" "-not" "-name" ".SRCINFO")
     newFiles=$(find -H "$PWD" "${findArgs[@]}")
     files=$(printf '%s\n%s\n' "$newFiles" "$oldFiles")
     mapfile -t toRemove < <(echo "$files" | sort | uniq -u)
