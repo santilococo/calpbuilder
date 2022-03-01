@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-setPermissions() {
+addUser() {
     useradd calbuilder -m
     echo "calbuilder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
     visudo -c
@@ -102,10 +102,10 @@ getInputs() {
 runScript() {
     set -euo pipefail
 
-    pacman -Syu --noconfirm base-devel
+    pacman -Syu --needed --noconfirm base-devel
 
     getInputs
-    setPermissions
+    addUser
 
     baseDir="$PWD"
     if [ -n "$pkgDir" ] && [ "$pkgDir" != "." ]; then 
