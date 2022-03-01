@@ -25,11 +25,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - id: makepkg
+    - id: calbuilder
       uses: santilococo/calbuilder@master
     - uses: actions/upload-artifact@v2
       with:
         path: |
-          ${{ steps.makepkg.outputs.srcInfo }}
-          ${{ steps.makepkg.outputs.pkgFile }}
+          ${{ steps.calbuilder.outputs.srcInfo }}
+          ${{ steps.calbuilder.outputs.pkgFile }}
 ```
