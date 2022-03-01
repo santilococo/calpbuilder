@@ -6,6 +6,19 @@ setPermissions() {
     chmod -R a+rw .
 }
 
+installAurDeps() {
+    if [ -n "$aurDeps" ] && [ "$aurDeps" = true ]; then
+        pacman -S --noconfirm --needed git
+        git clone https://aur.archlinux.org/paru-bin.git
+        cd paru-bin; sudo -u nobody makepkg -si --noconfirm; cd ..
+        sudo -u nobody makepkg --printsrcinfo > .SRCINFO
+        regExp="^[[:space:]]*\(make\)\?depends\(.\)* = \([[:alnum:][:punct:]]*\)[[:space:]]*$"
+        mapfile -t pkgDeps < <(sed -n -e "s/$regExp/\3/p" .SRCINFO)
+        paru -S --noconfirm "${pkgDeps[@]}"
+        rm -rf paru-bin .SRCINFO
+    fi
+}
+
 importPrivateKey() {
     echo "$gpgPrivateKey" > private.key
     gpgFlags=("--batch" "--pinentry-mode" "loopback" "--passphrase")
@@ -71,6 +84,7 @@ getInputs() {
     gpgPublicKey="$INPUT_GPGPUBLICKEY"
     gpgPassphrase="$INPUT_GPGPASSPHRASE"
     pkgDir="$INPUT_PKGDIR"
+    aurDeps="$INPUT_AURDEPS"
 }
 
 runScript() {
@@ -90,6 +104,7 @@ runScript() {
     fi
     oldFiles=$(find -H "$PWD" -not -path '*.git*')
 
+    installAurDeps
     buildPackage
     exportPackageFiles
     namcapAnalysis
