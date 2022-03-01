@@ -2,14 +2,14 @@
 
 setPermissions() {
     useradd calbuilder -m
-    echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+    echo "calbuilder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
     visudo -c
     chmod -R a+rw .
 }
 
 installAurDeps() {
     aurPkgs=()
-    sudo -u nobody makepkg --printsrcinfo > .SRCINFO
+    sudo -u calbuilder makepkg --printsrcinfo > .SRCINFO
     regExp="^[[:space:]]*\(make\)\?depends\(.\)* = \([[:alnum:][:punct:]]*\)[[:space:]]*$"
     mapfile -t pkgDeps < <(sed -n -e "s/$regExp/\3/p" .SRCINFO)
     for pkgDep in "${pkgDeps[@]}"; do
@@ -24,7 +24,7 @@ installAurDeps() {
     if [ "${#aurPkgs[@]}" -gt 0 ]; then
         pacman -S --noconfirm --needed git
         git clone https://aur.archlinux.org/paru-bin.git
-        cd paru-bin; sudo -u nobody makepkg -si --noconfirm; cd ..
+        cd paru-bin; sudo -Hu calbuilder makepkg -si --noconfirm; cd ..
         for aurPkg in "${aurPkgs[@]}"; do
             paru -S --noconfirm "$aurPkg"
         done
@@ -52,10 +52,10 @@ buildPackage() {
 }
 
 exportPackageFiles() {
-    sudo -u nobody makepkg --printsrcinfo > .SRCINFO
+    sudo -u calbuilder makepkg --printsrcinfo > .SRCINFO
     exportFile "srcInfo" ".SRCINFO"
 
-    pkgFile=$(sudo -u nobody makepkg --packagelist)
+    pkgFile=$(sudo -u calbuilder makepkg --packagelist)
     if [ -f "$pkgFile" ]; then
         relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
         exportFile "pkgFile" "$relPkgFile" "$pkgFile"
