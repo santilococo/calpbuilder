@@ -51,16 +51,35 @@ buildPackage() {
     fi
 }
 
+printWarnings() {
+    [ ${#warnings[@]} -eq 0 ] && return
+    for warning in "${warnings[@]}"; do
+        echo "::warning::$1 ——— $warning"
+    done
+}
+
+namcapAnalysis() {
+    pacman -S --noconfirm namcap
+    mapfile -t warnings < <(namcap PKGBUILD)
+    printWarnings "PKGBUILD"
+    pkgFile=$(sudo -u calbuilder makepkg --packagelist)
+    pkgFile=$(basename "$pkgFile")
+    if [ -f "$pkgFile" ]; then
+        mapfile -t warnings < <(namcap "$pkgFile")
+        printWarnings "$pkgFile"
+    fi
+}
+
 exportPackageFiles() {
     sudo -u calbuilder makepkg --printsrcinfo > .SRCINFO
     exportFile "srcInfo" ".SRCINFO"
 
     pkgFile=$(sudo -u calbuilder makepkg --packagelist)
+    pkgFile=$(basename "$pkgFile")
     if [ -f "$pkgFile" ]; then
-        relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
-        exportFile "pkgFile" "$relPkgFile" "$pkgFile"
+        exportFile "pkgFile" "$pkgFile"
         if [ -n "$gpgPrivateKey" ]; then
-            exportFile "pkgFileSig" "$relPkgFile.sig" "$pkgFile.sig"
+            exportFile "pkgFileSig" "$pkgFile.sig"
         fi
     fi
 }
@@ -68,29 +87,8 @@ exportPackageFiles() {
 exportFile() {
     echo "::set-output name=$1::$2"
     if [ "$inBaseDir" = false ]; then
-        [ $# -eq 2 ] && pkgFile=$2 || pkgFile=$3
         mv "$pkgFile" /github/workspace
     fi
-}
-
-namcapAnalysis() {
-    pacman -S --noconfirm namcap
-
-    mapfile -t warnings < <(namcap PKGBUILD)
-    printWarnings "PKGBUILD"
-    pkgFile=$(sudo -u calbuilder makepkg --packagelist)
-    if [ -f "$pkgFile" ]; then
-        relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
-        mapfile -t warnings < <(namcap "$pkgFile")
-        printWarnings "$relPkgFile"
-    fi
-}
-
-printWarnings() {
-    [ ${#warnings[@]} -eq 0 ] && return
-    for warning in "${warnings[@]}"; do
-        echo "::warning::$1 ——— $warning"
-    done
 }
 
 getInputs() {
@@ -120,17 +118,14 @@ runScript() {
 
     installAurDeps
     buildPackage
-    exportPackageFiles
     namcapAnalysis
+    exportPackageFiles
 
     findArgs+=("-not" "-name" "$relPkgFile*" "-not" "-name" ".SRCINFO")
     newFiles=$(find -H "$PWD" "${findArgs[@]}")
     files=$(printf '%s\n%s\n' "$newFiles" "$oldFiles")
     mapfile -t toRemove < <(echo "$files" | sort | uniq -u)
     rm -rf "${toRemove[@]}"
-
-    cd ..
-    ls -al
 }
 
 runScript "$@"
