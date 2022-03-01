@@ -17,7 +17,7 @@ installAurDeps() {
         set +e
         pkgInfo=$(pacman -Ss "${pkgName}" 2> /dev/null)
         set -e
-        if ! echo $pkgInfo | grep -q "\/${pkgName} "; then
+        if ! echo "$pkgInfo" | grep -q "\/${pkgName} "; then
             aurPkgs+=("$pkgName")
         fi
     done
@@ -106,7 +106,6 @@ runScript() {
     getInputs
     addUser
 
-    baseDir="$PWD"
     if [ -n "$pkgDir" ] && [ "$pkgDir" != "." ]; then 
         inBaseDir=false
         cd "$pkgDir"
