@@ -16,9 +16,9 @@ installAurDeps() {
         mapfile -t pkgDeps < <(sed -n -e "s/$regExp/\3/p" .SRCINFO)
         for pkgDep in "${pkgDeps[@]}"; do
             pkgName=$(echo "$pkgDep" | sed 's/[><=].*//')
-            paruOutput=$(paru -Ss "${pkgDep}" | grep "\/${pkgDep} ")
-            if echo $paruOutput | grep -q "^aur\/"
-                paru -S --noconfirm "$pkgDep"
+            paruOutput=$(paru -Ss "${pkgName}" | grep "\/${pkgName} ")
+            if echo "$paruOutput" | grep -q "^aur\/"; then
+                paru -S --noconfirm "$pkgName"
             fi
         done
         rm -rf paru-bin .SRCINFO
