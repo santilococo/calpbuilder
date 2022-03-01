@@ -44,7 +44,7 @@ namcapAnalysis() {
 printWarnings() {
     [ ${#warnings[@]} -eq 0 ] && return
     for warning in "${warnings[@]}"; do
-        echo "::warning::$1:$warning"
+        echo "::warning::$1 ——— $warning"
     done
 }
 
