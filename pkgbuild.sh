@@ -7,16 +7,19 @@ setPermissions() {
 }
 
 importPrivateKey() {
-    echo "$INPUT_GPGPRIVATEKEY" > private.key
-    sudo -u nobody gpg --batch --pinentry-mode loopback --passphrase "$INPUT_GPGPASSPHRASE" --import private.key
+    echo "$gpgPrivateKey" > private.key
+    gpgFlags=("--batch" "--pinentry-mode" "loopback" "--passphrase")
+    gpg "${gpgFlags[@]}" "$gpgPassphrase" --import private.key
     rm private.key
-    sed -i -e "s/gpg/gpg --batch --pinentry-mode loopback --passphrase \"$INPUT_GPGPASSPHRASE\"/" /usr/share/makepkg/integrity/generate_signature.sh
+    sedCommand="gpg ${gpgFlags[*]} \"$gpgPassphrase\""
+    makepkgSigFile="/usr/share/makepkg/integrity/generate_signature.sh"
+    sed -i -e "s/gpg/$sedCommand/" $makepkgSigFile
 }
 
 buildPackage() {
-    if [ -n "$INPUT_GPGPRIVATEKEY" ] && [ -n "$INPUT_GPGPUBLICKEY" ]; then
+    if [ -n "$gpgPrivateKey" ] && [ -n "$gpgPublicKey" ]; then
         importPrivateKey
-        sudo -u nobody makepkg -s --sign --key "$INPUT_GPGPUBLICKEY" --noconfirm
+        sudo -u nobody makepkg -s --sign --key "$gpgPublicKey" --noconfirm
     else
         sudo -u nobody makepkg -s --noconfirm
     fi
@@ -60,16 +63,28 @@ printWarnings() {
     done
 }
 
+getInputs() {
+    gpgPrivateKey="$INPUT_GPGPRIVATEKEY"
+    gpgPublicKey="$INPUT_GPGPUBLICKEY"
+    gpgPassphrase="$INPUT_GPGPASSPHRASE"
+    pkgDir="$INPUT_PKGDIR"
+}
+
 runScript() {
     set -euo pipefail
 
     pacman -Syu --noconfirm base-devel
 
+    getInputs
     setPermissions
 
     baseDir="$PWD"
-    [ -n "$INPUT_PKGDIR" ] && inBaseDir=true || inBaseDir=false
-    cd "${INPUT_PKGDIR:-.}"
+    if [ -n "$pkgDir" ] && [ "$pkgDir" != "." ]; then 
+        inBaseDir=false
+        cd "$pkgDir"
+    else
+        inBaseDir=true
+    fi
     oldFiles=$(find -H "$PWD" -not -path '*.git*')
 
     buildPackage
