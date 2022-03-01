@@ -26,6 +26,8 @@ outputs:
     description: "Generated .SRCINFO"
   pkgFile:
     description: "Built package file."
+  pkgFileSig:
+    description: "Built package signature file."
 runs:
   using: 'docker'
   image: 'Dockerfile'
