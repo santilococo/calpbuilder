@@ -44,6 +44,7 @@ importPrivateKey() {
 buildPackage() {
     if [ -n "$gpgPrivateKey" ] && [ -n "$gpgPublicKey" ]; then
         importPrivateKey
+        gpg --list-sigs
         sudo -u nobody makepkg -s --sign --key "$gpgPublicKey" --noconfirm
     else
         sudo -u nobody makepkg -s --noconfirm
