@@ -34,7 +34,7 @@ installAurDeps() {
 importPrivateKey() {
     echo "$gpgPrivateKey" > private.key
     gpgFlags=("--batch" "--pinentry-mode" "loopback" "--passphrase")
-    gpg "${gpgFlags[@]}" "$gpgPassphrase" --import private.key
+    sudo -u nobody gpg "${gpgFlags[@]}" "$gpgPassphrase" --import private.key
     rm private.key
     sedCommand="gpg ${gpgFlags[*]} \"$gpgPassphrase\""
     makepkgSigFile="/usr/share/makepkg/integrity/generate_signature.sh"
@@ -44,7 +44,6 @@ importPrivateKey() {
 buildPackage() {
     if [ -n "$gpgPrivateKey" ] && [ -n "$gpgPublicKey" ]; then
         importPrivateKey
-        gpg --list-sigs
         sudo -u nobody makepkg -s --sign --key "$gpgPublicKey" --noconfirm
     else
         sudo -u nobody makepkg -s --noconfirm
