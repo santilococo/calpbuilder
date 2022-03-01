@@ -56,6 +56,8 @@ exportPackageFiles() {
     exportFile "srcInfo" ".SRCINFO"
 
     pkgFile=$(sudo -u calbuilder makepkg --packagelist)
+    ls -al
+    echo "$pkgFile"
     if [ -f "$pkgFile" ]; then
         relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
         exportFile "pkgFile" "$relPkgFile" "$pkgFile"
@@ -122,6 +124,8 @@ runScript() {
     buildPackage
     exportPackageFiles
     namcapAnalysis
+
+    ls -al
 
     findArgs+=("-not" "-name" "$relPkgFile*" "-not" "-name" ".SRCINFO")
     newFiles=$(find -H "$PWD" "${findArgs[@]}")
