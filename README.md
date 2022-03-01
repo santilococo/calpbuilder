@@ -1,5 +1,5 @@
 # calbuilder
-GitHub action to build PKGFILE, analyze it with namcap and output its .SRCINFO.
+GitHub action to build a package, analyze it with namcap, and output the package file and its .SRCINFO.
 
 ## Inputs and outputs
 Inputs:
