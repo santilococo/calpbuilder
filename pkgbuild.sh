@@ -78,6 +78,7 @@ namcapAnalysis() {
 
     mapfile -t warnings < <(namcap PKGBUILD)
     printWarnings "PKGBUILD"
+    pkgFile=$(sudo -u calbuilder makepkg --packagelist)
     if [ -f "$pkgFile" ]; then
         relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
         mapfile -t warnings < <(namcap "$pkgFile")
