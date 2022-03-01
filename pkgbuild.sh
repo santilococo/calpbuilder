@@ -7,23 +7,27 @@ setPermissions() {
 }
 
 installAurDeps() {
-    if [ -n "$aurDeps" ] && [ "$aurDeps" = true ]; then
+    aurPkgs=()
+    sudo -u nobody makepkg --printsrcinfo > .SRCINFO
+    regExp="^[[:space:]]*\(make\)\?depends\(.\)* = \([[:alnum:][:punct:]]*\)[[:space:]]*$"
+    mapfile -t pkgDeps < <(sed -n -e "s/$regExp/\3/p" .SRCINFO)
+    for pkgDep in "${pkgDeps[@]}"; do
+        pkgName=$(echo "$pkgDep" | sed 's/[><=].*//')
+        set +e
+        pkgInfo=$(paru -Ss "${pkgName}" 2> /dev/null)
+        set -e
+        if ! echo "$pkgInfo" | grep "\/${pkgName} "; then
+            aurPkgs+=("$pkgName")
+        fi
+    done
+    if [ "${#aurPkgs[@]}" -gt 0 ]; then
         pacman -S --noconfirm --needed git
         git clone https://aur.archlinux.org/paru-bin.git
         cd paru-bin; sudo -u nobody makepkg -si --noconfirm; cd ..
-        sudo -u nobody makepkg --printsrcinfo > .SRCINFO
-        regExp="^[[:space:]]*\(make\)\?depends\(.\)* = \([[:alnum:][:punct:]]*\)[[:space:]]*$"
-        mapfile -t pkgDeps < <(sed -n -e "s/$regExp/\3/p" .SRCINFO)
-        for pkgDep in "${pkgDeps[@]}"; do
-            pkgName=$(echo "$pkgDep" | sed 's/[><=].*//')
-            set +e
-            pkgInfo=$(paru -Ss "${pkgName}" 2> /dev/null | grep "\/${pkgName} ")
-            set -e
-            if echo "$pkgInfo" | grep -q "^aur\/"; then
-                paru -S --noconfirm "$pkgName"
-            fi
+        for aurPkg in "${aurPkgs[@]}"; do
+            paru -S --noconfirm "$aurPkg"
         done
-        rm -rf paru-bin .SRCINFO
+        rm -rf paru-bin 
     fi
 }
 
@@ -92,7 +96,6 @@ getInputs() {
     gpgPublicKey="$INPUT_GPGPUBLICKEY"
     gpgPassphrase="$INPUT_GPGPASSPHRASE"
     pkgDir="$INPUT_PKGDIR"
-    aurDeps="$INPUT_AURDEPS"
 }
 
 runScript() {
