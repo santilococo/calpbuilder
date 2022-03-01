@@ -21,7 +21,6 @@ inputs:
     description: "The GPG passphrase for the gpgPrivateKey."
     required: false
     default: ""
-
 outputs:
   srcInfo:
     description: "Generated .SRCINFO"

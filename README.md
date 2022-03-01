@@ -29,6 +29,7 @@ jobs:
       uses: santilococo/calbuilder@master
     - uses: actions/upload-artifact@v2
       with:
-        path: ${{ steps.makepkg.outputs.srcInfo }}
-        path: ${{ steps.makepkg.outputs.pkgFile }}
+        path: |
+          ${{ steps.makepkg.outputs.srcInfo }}
+          ${{ steps.makepkg.outputs.pkgFile }}
 ```
