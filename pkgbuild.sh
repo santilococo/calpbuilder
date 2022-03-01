@@ -28,13 +28,24 @@ exportFile() {
 namcapAnalysis() {
     pacman -S --noconfirm namcap
 
-    namcapOutput=$(namcap PKGBUILD)
-    [ -n "$namcapOutput" ] && echo "::warning::$namcapOutput HOLA"
+    mapfile -t warnings < <(namcap PKGBUILD)
+    printWarnings "PKGBUILD"
     if [ -f "$pkgFile" ]; then
         relPkgFile="$(realpath --relative-base="$baseDir" "$pkgFile")"
-        namcapOutput=$(namcap "$pkgFile")
-        [ -n "$namcapOutput" ] && echo "::warning::$relPkgFile:$namcapOutput CHAU"
+        mapfile -t warnings < <(namcap "$pkgFile")
+        # [ ${#warnings[@]} -eq 0 ] && return
+        # for warning in "${warnings[@]}"; do
+        #     echo "::warning::$relPkgFile:$warning"
+        # done
+        printWarnings "$relPkgFile"
     fi
+}
+
+printWarnings() {
+    [ ${#warnings[@]} -eq 0 ] && return
+    for warning in "${warnings[@]}"; do
+        echo "::warning::$1:$warning"
+    done
 }
 
 runScript() {
