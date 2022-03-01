@@ -6,6 +6,10 @@ setPermissions() {
     chmod -R a+rw .
 }
 
+buildPackage() {
+    sudo -u nobody makepkg -s --noconfirm
+}
+
 exportPackageFiles() {
     sudo -u nobody makepkg --printsrcinfo > .SRCINFO
     exportFile "srcInfo" ".SRCINFO"
@@ -56,7 +60,7 @@ runScript() {
     cd "${INPUT_PKGDIR:-.}"
     oldFiles=$(find -H "$PWD" -not -path '*.git*')
 
-    sudo -u nobody makepkg -s --noconfirm
+    buildPackage
 
     exportPackageFiles
     namcapAnalysis
