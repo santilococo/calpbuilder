@@ -4,19 +4,19 @@ GitHub action to build a package, analyze it with `namcap`, and output the packa
 This action supports PKGBUILDs that have AUR dependencies.
 
 ## Table of contents
-  - [Inputs and outputs <a name="inputs-and-outputs-"></a>](#inputs-and-outputs--)
+  - [Inputs and outputs <a name="inputs-and-outputs-"></a>](#inputs-and-outputs-)
   - [Usage <a name="usage"></a>](#usage-)
   - [Contributing <a name="contributing"></a>](#contributing-)
   - [License <a name="license"></a>](#license-)
 
 ## Inputs and outputs <a name="inputs-and-outputs-"></a>
 ### Inputs:
-* `pkgDir`: PKGBUILD directory relative path.
+* `pkgDir`: relative path to the PKGBUILD directory.
 * `gpgPublicKey`: GPG public key that will be used to sign packages.
 * `gpgPrivateKey`: GPG private key.
-* `gpgPassphrase`: The GPG passphrase for the `gpgPrivateKey`.
+* `gpgPassphrase`: GPG passphrase of `gpgPrivateKey`.
 
-It is recommended that you store the `gpgPrivateKey` and the `gpgPassphrase` as secrets (see [Usage <a name="usage"></a>](#usage-)).
+It is recommended to store `gpgPrivateKey` and `gpgPassphrase` as secrets (see [Usage](#usage-)).
 
 None of these inputs are required. 
 
