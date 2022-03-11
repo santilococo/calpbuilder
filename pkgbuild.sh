@@ -98,9 +98,6 @@ exportPackageFiles() {
 
 runScript() {
     set -euo pipefail
-
-    pacman -Syu --needed --noconfirm base-devel
-
     getInputs
     addUser
 
