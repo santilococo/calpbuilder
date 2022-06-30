@@ -66,7 +66,7 @@ printWarnings() {
 }
 
 namcapAnalysis() {
-    pacman -S --noconfirm namcap
+    pacman -Sy --noconfirm namcap
     mapfile -t warnings < <(namcap PKGBUILD)
     printWarnings "PKGBUILD"
     pkgFile=$(sudo -u calbuilder makepkg --packagelist)
