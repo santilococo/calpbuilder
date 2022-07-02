@@ -29,7 +29,7 @@ installAurDeps() {
         fi
     done
     if [ "${#aurPkgs[@]}" -gt 0 ]; then
-        pacman -Syu --noconfirm --needed git
+        pacman -Su --noconfirm --needed git
         sudo -u calbuilder git clone https://aur.archlinux.org/paru-bin.git
         cd paru-bin; sudo -Hu calbuilder makepkg -si --noconfirm; cd ..
         for aurPkg in "${aurPkgs[@]}"; do
@@ -66,7 +66,7 @@ printWarnings() {
 }
 
 namcapAnalysis() {
-    pacman -Sy --noconfirm namcap
+    pacman -S --noconfirm namcap
     mapfile -t warnings < <(namcap PKGBUILD)
     printWarnings "PKGBUILD"
     pkgFile=$(sudo -u calbuilder makepkg --packagelist)
@@ -110,6 +110,7 @@ runScript() {
     findArgs=("-not" "-path" "*.git*")
     oldFiles=$(find -H "$PWD" "${findArgs[@]}")
 
+    pacman -Sy
     installAurDeps
     buildPackage
     namcapAnalysis
