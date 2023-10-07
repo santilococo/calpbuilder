@@ -50,6 +50,7 @@ importPrivateKey() {
 }
 
 buildPackage() {
+    sudo -Hu calbuilder updpkgsums
     if [ -n "$gpgPrivateKey" ] && [ -n "$gpgPublicKey" ]; then
         importPrivateKey
         sudo -Hu calbuilder makepkg -s --sign --key "$gpgPublicKey" --noconfirm
