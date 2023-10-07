@@ -50,6 +50,7 @@ importPrivateKey() {
 }
 
 buildPackage() {
+    pacman -S --noconfirm pacman-contrib
     sudo -Hu calbuilder updpkgsums
     if [ -n "$gpgPrivateKey" ] && [ -n "$gpgPublicKey" ]; then
         importPrivateKey
