@@ -44,7 +44,7 @@ importPrivateKey() {
     gpgFlags=("--batch" "--pinentry-mode" "loopback" "--passphrase")
     sudo -Hu calbuilder gpg "${gpgFlags[@]}" "$gpgPassphrase" --import private.key
     rm private.key
-    sedCommand="gpg ${gpgFlags[*]} \'$gpgPassphrase\'"
+    sedCommand="gpg ${gpgFlags[*]} '$gpgPassphrase'"
     makepkgSigFile="/usr/share/makepkg/integrity/generate_signature.sh"
     sed -i -e "s/gpg/$sedCommand/" $makepkgSigFile
 }
