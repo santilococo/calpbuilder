@@ -112,6 +112,7 @@ runScript() {
     findArgs=("-not" "-path" "*.git*")
     oldFiles=$(find -H "$PWD" "${findArgs[@]}")
 
+    pacman-key --init
     pacman -Sy
     installAurDeps
     buildPackage
