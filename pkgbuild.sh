@@ -54,6 +54,7 @@ buildPackage() {
     pacman -S --noconfirm pacman-contrib
     sudo -Hu calbuilder updpkgsums
     if [ -n "$gpgPrivateKey" ] && [ -n "$gpgPublicKey" ]; then
+	printWarnings "Inside GPG"
         importPrivateKey
         sudo -Hu calbuilder makepkg -s --sign --key "$gpgPublicKey" --noconfirm
     else
