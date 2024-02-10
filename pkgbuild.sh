@@ -113,8 +113,8 @@ runScript() {
     findArgs=("-not" "-path" "*.git*")
     oldFiles=$(find -H "$PWD" "${findArgs[@]}")
 
-    pacman -Sy archlinux-keyring --noconfirm
     pacman-key --init
+    pacman -Sy archlinux-keyring --noconfirm
     installAurDeps
     buildPackage
     namcapAnalysis
